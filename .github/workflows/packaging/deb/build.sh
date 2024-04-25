@@ -45,10 +45,10 @@ assets=(
 	"./cma-server-config.yaml /home/scada/cma-server/ 644"
 	"./sql/create_event_view.sql /tmp/cma-history/ 644"
 	"./sql/create_event.sql /tmp/cma-history/ 644"
-	"./sql/create_tag.sql /tmp/cma-history/ 644"
+	"./sql/create_tags.sql /tmp/cma-history/ 644"
 	"./sql/drop_event_view.sql /tmp/cma-history/ 644"
 	"./sql/drop_event.sql /tmp/cma-history/ 644"
-	"./sql/drop_tag.sql /tmp/cma-history/ 644"
+	"./sql/drop_tags.sql /tmp/cma-history/ 644"
 )
 outputDir=target/
 # 'any', 'all' or one of the supported architecture (e.g., 'amd64', 'arm64', 'i386', 'armhf')

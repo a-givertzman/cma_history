@@ -2,18 +2,32 @@
 # 
 # Deb package postinst script for API Server
 #
+############ STANDART USER, PASS, BD NAME FOR HISTORY SERVICE ############
+user="crane_data_server"
+pass="00d0-25e4-*&s2-ccds"
+db="crane_data_server"
+#
+############ INITIAL SQL SCRIPTS ############
 echo ""
-systemctl daemon-reload
-name="api-server"
-if [[ $(systemctl list-unit-files --all -t service --full --no-legend "$name.service" | sed 's/^\s*//g' | cut -f1 -d' ') == $name.service ]]; then
-    if ! systemctl is-enabled --quiet "$name.service" ; then
-        echo "Enabling $name service..."
-        systemctl enable api-server
-    fi
-    if ! systemctl is-active --quiet "$name.service" ; then
-        echo "Starting $name service..."
-        systemctl start api-server
-    fi
-else
-    echo "$name service - not found"
-fi
+echo "Creating Hystory database user '$user'..."
+sudo -i -u postgres psql << CREATE_USER
+    do \$\$
+    begin
+        if not exists (SELECT 1 FROM pg_user WHERE usename = '$user') THEN
+            CREATE USER $user WITH PASSWORD '$pass' CREATEDB CREATEROLE;
+        end if;
+    end
+    \$\$;
+CREATE_USER
+echo ""
+echo "Creating Hystory database '$db'..."
+sudo -i -u postgres psql << CREATE_DB
+    do \$\$
+    begin
+        if not exists (SELECT 1 FROM pg_database WHERE datname = '$db') THEN
+            CREATE DATABASE $db;
+            GRANT ALL PRIVILEGES ON DATABASE $db TO $user;
+        end if;
+    end
+    \$\$;
+CREATE_DB

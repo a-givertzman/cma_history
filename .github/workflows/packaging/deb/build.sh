@@ -41,9 +41,14 @@ fi
 # list of assets in the format:
 # 	<sourcePath> <installPath> <permissions>
 assets=(
-	"./target/release/api-server /usr/bin/ 755"
-	"./.github/workflows/packaging/deb/service/api-server.service /etc/systemd/system/ 644"
-	"./config.yaml /home/scada/api-server/"
+	"./cma-history-config.yaml /home/scada/api-server/ 644"
+	"./cma-server-config.yaml /home/scada/cma-server/ 644"
+	"./sql/create_event_view.sql /tmp/cma-history/ 644"
+	"./sql/create_event.sql /tmp/cma-history/ 644"
+	"./sql/create_tag.sql /tmp/cma-history/ 644"
+	"./sql/drop_event_view.sql /tmp/cma-history/ 644"
+	"./sql/drop_event.sql /tmp/cma-history/ 644"
+	"./sql/drop_tag.sql /tmp/cma-history/ 644"
 )
 outputDir=target/
 # 'any', 'all' or one of the supported architecture (e.g., 'amd64', 'arm64', 'i386', 'armhf')
@@ -52,7 +57,7 @@ arch=
 # comma separated list of the package dependecies in the following format:
 # "<package_name> [(<<|>>|<=|>=|= <version>)], ..."
 # e.g. "foo (>=2.34), bar"
-depends=""
+depends="postgres (>=13.14)"
 
 # check required variables
 echo "Checking reqired variables ..."

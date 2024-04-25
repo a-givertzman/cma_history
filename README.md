@@ -8,7 +8,7 @@ The part of the [CMA Server](https://github.com/a-givertzman/fr-service)
 
 ## Dependencies
 
-Following software pacages has tu be preinstalled by user
+Following software pacages has to be preinstalled by user
 
 - [CMA Server](https://github.com/a-givertzman/fr-service)
 - [API Server](https://github.com/a-givertzman/api-server)

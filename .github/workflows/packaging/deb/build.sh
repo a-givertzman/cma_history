@@ -4,27 +4,17 @@
 ############ LIST OF MANAGED VARIABLES REQUIRED FOR DEB PACKAGE ############
 name=api-server
 # version=x.y.z - reading from first arg $1
-descriptionShort="API Server wrapping databases, executable and python scripts plugins"
-descriptionExtended="API Server - service running on the socket.
-Provides simple and universe access to the databases, executable and python plugins.
-Wrapping databases:
- SQLite
- MySQL
- PostgreSQL
-Runs puthon script:
- Python script received some json data via stdin
- Python script handle some algorithms
- Python script can access to the databases data via self API or directly
- Python script returns some json data
-Runs binaty executable:
- Executable received some json data via stdin
- Executable handle some algorithms
- Executable can access to the databases data via self API or directly
- Executable returns some json data"
+descriptionShort="CMA History - the part of the CMA Server"
+descriptionExtended="CMA History. The part of the [CMA Server](https://github.com/a-givertzman/fr-service)
+- Contains SQL scripts for the historian database for the CMA Server
+- Contains deb package for the automated installation required (for CMA Server History service) database configuration"
 changeDetails="
-- TcpServer | clean threads
-- Some fixes in the TcpConnection
-- ApiQuery moved to the library
+- Created scripts for configuring postgres database for History service of the CMA Server
+   - create database 'crane_data_server'
+   - create user 'crane_data_server' with password
+   - create table 'tags' storing id, name, type of all project points (process/logical/diagnosis signals)
+   - create table 'event' storing historyan information (tag id, value, timestamp)
+   - create view 'event_view' for read access to the 'event' table
 "
 copyrightNotice="Copyright 2024 anton lobanov"
 maintainer="anton lobanov <lobanov.anton@gmail.com>"
@@ -41,11 +31,13 @@ else
 	echo -e "${RED}ERROR${NC}: Version not supplied.\nDebian package build script required proper version of your softvare in the format: x.y.z, passed as argument"
 fi
 ############ LIST OF MANAGED VARIABLES OPTIONAL FOR DEB PACKAGE ############
+#
 # preinst, postinst, prerm and postrm scripts:
-preinst="./.github/workflows/packaging/deb/preinst"
-postinst="./.github/workflows/packaging/deb/postinst"
-prerm="./.github/workflows/packaging/deb/prerm"
-postrm="./.github/workflows/packaging/deb/postrm"
+# preinst="./.github/workflows/packaging/deb/preinst"
+# postinst="./.github/workflows/packaging/deb/postinst"
+# prerm="./.github/workflows/packaging/deb/prerm"
+# postrm="./.github/workflows/packaging/deb/postrm"
+#
 # list of assets in the format:
 # 	<sourcePath> <installPath> <permissions>
 assets=(
@@ -117,10 +109,10 @@ for asset in "${assets[@]}"; do
 	read -ra assetOptions <<< $asset
 	copyAsset ${assetOptions[0]} ${assetOptions[1]} ${assetOptions[2]}
 done
-copyAsset ${preinst} "DEBIAN" "755"
-copyAsset ${postinst} "DEBIAN" "755"
-copyAsset ${prerm} "DEBIAN" "755"
-copyAsset ${postrm} "DEBIAN" "755"
+if [ -z "$preinst" ]; then copyAsset ${preinst} "DEBIAN" "755"
+if [ -z "$postinst" ]; then copyAsset ${postinst} "DEBIAN" "755"
+if [ -z "$prerm" ]; then copyAsset ${prerm} "DEBIAN" "755"
+if [ -z "$postrm" ]; then copyAsset ${postrm} "DEBIAN" "755"
 
 ############ CREATE A DEB CONTROL FILE ############
 

@@ -3,7 +3,7 @@
 # Deb package postinst script for API Server
 #
 ############ STANDART USER, PASS, BD NAME FOR HISTORY SERVICE ############
-user="my_user" #"crane_data_server"
+user="crane_data_server"
 pass="00d0-25e4-*&s2-ccds"
 db="crane_data_server"
 #

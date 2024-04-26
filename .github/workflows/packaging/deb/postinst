@@ -8,32 +8,46 @@ pass="00d0-25e4-*&s2-ccds"
 db="crane_data_server"
 #
 ############ INITIAL SQL SCRIPTS ############
-echo ""
-echo "Creating Hystory database user '$user'..."
-source "./sql/create_user.sql"
-echo $sql | sudo -i -u postgres psql --echo-errors
-#
-echo ""
-echo "Creating Hystory database '$db'..."
-source "./sql/create_db.sql"
-echo $sql | sudo -i -u postgres psql --echo-errors
-#
-echo ""
-echo "Creating 'tags' table..."
-source "./sql/create_tags.sql"
-echo $sql | sudo -i -u postgres psql --echo-errors
-#
-echo ""
-echo "Creating 'event' table..."
-source "./sql/create_event.sql"
-echo $sql | sudo -i -u postgres psql --echo-errors
-#
-echo ""
-echo "Creating 'event_view' view..."
-source "./sql/create_event_view.sql"
-echo $sql | sudo -i -u postgres psql --echo-errors
-#
-echo ""
-echo "Creating 'event_view' view..."
-source "./sql/create_event_view.sql"
-echo $sql | sudo -i -u postgres psql --echo-errors
+read -r -d '' scripts << EOF
+    "./sql/create_user.sql" "Creating Hystory database user '$user'..."
+    "./sql/create_db.sql" "Creating Hystory database '$db'..."
+    "./sql/create_tags.sql" "Creating 'tags' table..."
+    "./sql/create_event.sql" "Creating 'event' table..."
+    "./sql/create_event_view.sql" "Creating 'event_view' view..."
+EOF
+
+r="(.+)\"[ \t]+\"(.+)"
+while IFS= read -r row; do
+    path=`echo $row | sed -E 's/\"'"$r"'\"/\1/'`
+    description=`echo $row | sed -E 's/\"'"$r"'\"/\2/'`
+    echo ""
+    echo "$description"
+    echo "\t using script: $path"
+    source "$path"
+    echo $sql | sudo -i -u postgres psql --echo-errors
+done <<< "$scripts"
+
+# exit 0
+
+
+# echo "Creating Hystory database user '$user'..."
+# #
+# echo ""
+# echo "Creating Hystory database '$db'..."
+# source "./sql/create_db.sql"
+# echo $sql | sudo -i -u postgres psql --echo-errors
+# #
+# echo ""
+# echo "Creating 'tags' table..."
+# source "./sql/create_tags.sql"
+# echo $sql | sudo -i -u postgres psql --echo-errors
+# #
+# echo ""
+# echo "Creating 'event' table..."
+# source "./sql/create_event.sql"
+# echo $sql | sudo -i -u postgres psql --echo-errors
+# #
+# echo ""
+# echo "Creating 'event_view' view..."
+# source "./sql/create_event_view.sql"
+# echo $sql | sudo -i -u postgres psql --echo-errors

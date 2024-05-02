@@ -1,6 +1,6 @@
 read -r -d '' sql << EOF
     SELECT 'CREATE DATABASE $db'
-    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '$db')\gexec;
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '$db')\gexec
     do \$\$
     begin
         if exists (SELECT 1 FROM pg_database WHERE datname = '$db') THEN

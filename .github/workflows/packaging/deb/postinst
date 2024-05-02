@@ -18,8 +18,6 @@ EOF
     # "./sql/create_event_view.sql" "Creating 'event_view' view..."
 # EOF
 
-SET PGCLIENTENCODING=utf-8
-
 r="(.+)\"[ \t]+\"(.+)"
 while IFS= read -r row; do
     path=`echo $row | sed -E 's/\"'"$r"'\"/\1/'`

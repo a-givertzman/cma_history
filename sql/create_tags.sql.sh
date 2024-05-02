@@ -1,6 +1,6 @@
-/*
-    PROCESS TAG
-*/
+#
+#    PROCESS TAG
+#
 read -r -d '' sql << EOF
     do \$\$
     begin

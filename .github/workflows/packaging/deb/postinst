@@ -37,11 +37,11 @@ while IFS= read -r row; do
     echo "$sql"
 
     if [ -z "$connect" ]; then
-        echo "psql"
-        # echo $sql | sudo -i -u postgres psql --echo-errors
+        # echo "psql"
+        echo $sql | sudo -i -u postgres psql --echo-errors
     else
-        echo "psql db: $connect"
-        # echo $sql | sudo -i -u postgres psql --echo-errors --dbname=$connect
+        # echo "psql db: $connect"
+        echo $sql | sudo -i -u postgres psql --echo-errors --dbname=$connect
     fi
 done <<< "$scripts"
 

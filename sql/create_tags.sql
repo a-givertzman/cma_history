@@ -12,9 +12,9 @@ read -r -d '' sql << EOF
     create table if not exists tags (
         id 		serial not null,
         type      tag_type_enum not null,                   -- 'S7DataType(bool, int, uInt, dInt, word, lInt, real, time, dateAndTime)'
-        name      varchar(255) not null unique,	            -- 'Имя тэга в системе'
-        description   varchar(255) not null DEFAULT '',     -- 'Дополнительная информация о тэге'
+        name      varchar(255) not null unique,	            -- 'Tag description'
+        description   varchar(255) not null DEFAULT '',     -- 'Tag extended description'
         PRIMARY KEY (id)
     );
-    comment on table tags is 'Справочник тэгов проекта.';
+    comment on table tags is 'Tag dictionary';
 EOF

@@ -1,15 +1,15 @@
-/*
-    PROCESS EVENT
-*/
+#
+#    PROCESS EVENT
+#
 read -r -d '' sql << EOF
     CREATE TABLE IF NOT EXISTS event (
-        uid         BIGSERIAL PRIMARY KEY, --'1.000000000000', --COMMENT 'Идентификатор записи',
+        uid         BIGSERIAL PRIMARY KEY,
         timestamp   TIMESTAMP NOT NULL,
-        pid         int2 NOT NULL,                      --COMMENT 'Идентификатор тэга.',
-        value       int2 NOT NULL,                      --COMMENT 'Значение тэга 0..255, аварийно если >0.',
-        status      int2 NOT NULL                       --COMMENT 'DsStatus as 0..255',
+        pid         int2 NOT NULL,
+        value       int2 NOT NULL,
+        status      int2 NOT NULL
     ); 
-    comment on table event is 'События. Только тэги дискретных значений, регистрируется 0 - как норма, > 0 - как авария.';
+    comment on table event is 'Events. Storing boolean (0/1) values only. 0 - Normal, > 0 - Alarm';
     CREATE INDEX idx_event_timestamp ON event (timestamp ASC);
 
     CREATE TABLE

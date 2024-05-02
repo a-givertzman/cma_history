@@ -1,5 +1,4 @@
 read -r -d '' sql << EOF
-    \connect $db
     create or replace view event_view as
         select
             e.uid AS uid,

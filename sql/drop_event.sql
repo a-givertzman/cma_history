@@ -2,7 +2,6 @@
     PROCESS EVENT
 */
 read -r -d '' sql << EOF
-    \connect $db
     drop trigger if exists event_delete_trigger;
     drop function if exists event_counter_dec();
     drop trigger if exists event_insert_trigger;

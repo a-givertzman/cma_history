@@ -2,7 +2,6 @@
     PROCESS EVENT
 */
 read -r -d '' sql << EOF
-    \connect $db
     CREATE TABLE IF NOT EXISTS event (
         uid         BIGSERIAL PRIMARY KEY, --'1.000000000000', --COMMENT 'Идентификатор записи',
         timestamp   TIMESTAMP NOT NULL,

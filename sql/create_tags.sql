@@ -16,5 +16,4 @@ read -r -d '' sql << EOF
         description   varchar(255) not null DEFAULT '',   --COMMENT 'Дополнительная информация о тэге',
         PRIMARY KEY (id)
     );
-    comment on table tags is 'Справочник тэгов проекта.';
 EOF

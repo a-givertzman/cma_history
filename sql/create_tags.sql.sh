@@ -16,5 +16,5 @@ read -r -d '' sql << EOF
         description   varchar(255) not null DEFAULT '',
         PRIMARY KEY (id)
     );
+    comment on table tags is 'Tag dictionary';
 EOF
-    # comment on table tags is 'Tag dictionary';

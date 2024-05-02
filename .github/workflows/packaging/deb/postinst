@@ -11,6 +11,7 @@ db="crane_data_server"
 read -r -d '' scripts << EOF
     "./sql/create_user.sql" "Creating Hystory database user '$user'..."
     "./sql/create_db.sql" "Creating Hystory database '$db'..."
+    "./sql/create_grant_user.sql" "Creating Hystory database '$db'..."
 EOF
 #     "./sql/create_tags.sql" "Creating 'tags' table..."
 #     "./sql/create_event.sql" "Creating 'event' table..."

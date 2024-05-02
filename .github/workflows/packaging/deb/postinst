@@ -12,7 +12,7 @@ read -r -d '' scripts << EOF
     "./sql/create_user.sql" "Creating Hystory database user '$user'..."
     "./sql/create_db.sql" "Creating Hystory database '$db'..."
     "./sql/create_grant_user.sql" "Creating Hystory database '$db'..."
-    "./sql/create_tags.sql" "Creating 'tags' table..."
+    "./sql/create_tags.sql.sh" "Creating 'tags' table..."
 EOF
     # "./sql/create_event.sql" "Creating 'event' table..."
     # "./sql/create_event_view.sql" "Creating 'event_view' view..."

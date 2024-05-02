@@ -9,22 +9,25 @@ db="crane_data_server"
 #
 ############ INITIAL SQL SCRIPTS ############
 read -r -d '' scripts << EOF
-    "postgres" "./sql/create_user.sql" "Creating Hystory database user '$user'..."
-    "postgres" "./sql/create_db.sql" "Creating Hystory database '$db'..."
-    "postgres" "./sql/create_grant_user.sql" "Creating Hystory database '$db'..."
+    "./sql/create_user.sql" "Creating Hystory database user '$user'..."
+    "./sql/create_db.sql" "Creating Hystory database '$db'..."
+    "./sql/create_grant_user.sql" "Creating Hystory database '$db'..."
     "$db" "./sql/create_tags.sql.sh" "Creating 'tags' table..."
 EOF
     # "./sql/create_event.sql" "Creating 'event' table..."
     # "./sql/create_event_view.sql" "Creating 'event_view' view..."
 # EOF
 
-r="(.+)\"[ \t]+\"(.+)"
+r="(?:(.+)\"[ \t]+)*\"(.+)\"[ \t]+\"(.+)"
 while IFS= read -r row; do
     connect=`echo $row | sed -E 's/\"'"$r"'\"/\1/'`
     path=`echo $row | sed -E 's/\"'"$r"'\"/\2/'`
     description=`echo $row | sed -E 's/\"'"$r"'\"/\3/'`
     echo ""
-    echo "$description"
+    echo "connect: $connect"
+
+    echo ""
+    echo "description: $description"
 
     echo "\t using script: $path"
 

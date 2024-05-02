@@ -2,7 +2,7 @@
 #    PROCESS TAG
 #
 read -r -d '' sql << EOF
-    /*\connect $db;
+    \\connect $db;
 
     do \$\$
     begin

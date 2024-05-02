@@ -11,9 +11,9 @@ read -r -d '' sql << EOF
     \$\$;
     create table if not exists tags (
         id 		serial not null,
-        type      tag_type_enum not null,                   -- 'S7DataType(bool, int, uInt, dInt, word, lInt, real, time, dateAndTime)'
-        name      varchar(255) not null unique,	            -- 'Tag description'
-        description   varchar(255) not null DEFAULT '',     -- 'Tag extended description'
+        type      tag_type_enum not null,
+        name      varchar(255) not null unique,
+        description   varchar(255) not null DEFAULT '',
         PRIMARY KEY (id)
     );
 EOF

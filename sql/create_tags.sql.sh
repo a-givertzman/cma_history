@@ -3,6 +3,7 @@
 #
 read -r -d '' sql << EOF
     \\c '$db';
+
     do \$\$
     begin
         if not exists (SELECT 1 FROM pg_type WHERE typname = 'tag_type_enum') THEN

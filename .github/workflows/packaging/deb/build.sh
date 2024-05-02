@@ -41,8 +41,8 @@ fi
 # list of assets in the format:
 # 	<sourcePath> <installPath> <permissions>
 assets=(
-	"./cma-history-config.yaml /home/scada/api-server/ 644"
-	"./cma-server-config.yaml /home/scada/cma-server/ 644"
+	"./src/cma-history-config.yaml /home/scada/api-server/ 644"
+	"./src/cma-server-config.yaml /home/scada/cma-server/ 644"
 	"./sql/create_event_view.sql /tmp/cma-history/ 644"
 	"./sql/create_event.sql /tmp/cma-history/ 644"
 	"./sql/create_tags.sql /tmp/cma-history/ 644"

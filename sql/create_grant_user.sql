@@ -8,4 +8,5 @@ read -r -d '' sql << EOF
         end if;
     end
     \$\$;
+    \connect DBNAME
 EOF

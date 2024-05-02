@@ -32,7 +32,7 @@ while IFS= read -r row; do
     echo "SQL:"
     echo "$sql"
 
-    echo $sql | sudo -i -u postgres psql --echo-errors --single-line
+    echo $sql | sudo -i -u postgres psql #--echo-errors
 done <<< "$scripts"
 
 # exit 0

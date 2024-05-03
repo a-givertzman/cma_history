@@ -14,12 +14,12 @@ db="crane_data_server"
 # list of SQL scripts to be executed in the format:
 # 	[database] <path to sql script> <description>
 read -r -d '' scripts << EOF
-    "" "./sql/create_user.sql" "Creating Hystory database user '$user'..."
-    "" "./sql/create_db.sql" "Creating Hystory database '$db'..."
-    "" "./sql/create_grant_user.sql" "Creating Hystory database '$db'..."
-    "$db" "./sql/create_tags.sql" "Creating 'tags' table..."
-    "$db" "./sql/create_event.sql" "Creating 'event' table..."
-    "$db" "./sql/create_event_view.sql" 
+    "" "/etc/cma-history/create_user.sql" "Creating Hystory database user '$user'..."
+    "" "/etc/cma-history/create_db.sql" "Creating Hystory database '$db'..."
+    "" "/etc/cma-history/create_grant_user.sql" "Creating Hystory database '$db'..."
+    "$db" "/etc/cma-history/create_tags.sql" "Creating 'tags' table..."
+    "$db" "/etc/cma-history/create_event.sql" "Creating 'event' table..."
+    "$db" "/etc/cma-history/create_event_view.sql" 
 EOF
 
 ############ INSTALLATION ACTIONS ############

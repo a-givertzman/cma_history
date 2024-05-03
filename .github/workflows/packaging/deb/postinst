@@ -41,7 +41,7 @@ while IFS= read -r row; do
     echo -e "\t${GRAY}connect to database:${NC} $connect"
     source "$path"
     echo -e "\t${GRAY}SQL:${NC}"
-    # echo -e "\t${GRAY}$sql${NC}"
+    echo -e "\t${GRAY}$sql${NC}"
     if [ -z "$connect" ]; then
         echo $sql | sudo -i -u postgres psql --echo-errors
     else

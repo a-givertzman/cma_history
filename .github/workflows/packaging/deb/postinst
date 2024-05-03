@@ -2,70 +2,49 @@
 # 
 # Deb package postinst script for API Server
 #
-############ STANDART USER, PASS, BD NAME FOR HISTORY SERVICE ############
+############ CONFIGURATION SECTION ############
+#
+# Standart user, pass, database name for History service
+#
 user="crane_data_server"
 pass="00d0-25e4-*&s2-ccds"
 db="crane_data_server"
 #
-############ INITIAL SQL SCRIPTS ############
+############ LIST OF SQL SCRIPTS TO BE EXECUTED ############
+# list of SQL scripts to be executed in the format:
+# 	[database] <path to sql script> <description>
 read -r -d '' scripts << EOF
     "" "./sql/create_user.sql" "Creating Hystory database user '$user'..."
     "" "./sql/create_db.sql" "Creating Hystory database '$db'..."
     "" "./sql/create_grant_user.sql" "Creating Hystory database '$db'..."
     "$db" "./sql/create_tags.sql" "Creating 'tags' table..."
     "$db" "./sql/create_event.sql" "Creating 'event' table..."
-    "$db" "./sql/create_event_view.sql" "Creating 'event_view' view..."
+    "$db" "./sql/create_event_view.sql" 
 EOF
-# EOF
 
-r="((.+)\"[ \t]+)*\"(.+)\"[ \t]+\"(.+)"
+############ INSTALLATION ACTIONS ############
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+GRAY='\033[1;30m'
+NC='\033[0m' # No Color
+############ LOAD TO DB VIA PSQL ############
+regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 while IFS= read -r row; do
-    connect=`echo $row | sed -E 's/\"'"$r"'\"/\2/'`
-    path=`echo $row | sed -E 's/\"'"$r"'\"/\3/'`
-    description=`echo $row | sed -E 's/\"'"$r"'\"/\4/'`
+    [[ $row =~ $regex ]]
+    connect=${BASH_REMATCH[1]:=""}
+    path=${BASH_REMATCH[2]:="${RED}not specified${NC}"}
+    description=${BASH_REMATCH[4]:="Unnamed SQL script..."}
     echo ""
-    echo "connect: $connect"
-
-    echo ""
-    echo "description: $description"
-
-    echo "\t using script: $path"
-
+    echo -e "c0: $c0"
+    echo -e "$description"
+    echo -e "\t${GRAY}from file:${NC} $path"
+    echo -e "\t${GRAY}connect to database:${NC} $connect"
     source "$path"
-
-    echo "SQL:"
-    echo "$sql"
-
+    echo -e "\t${GRAY}SQL:${NC}"
+    # echo -e "\t${GRAY}$sql${NC}"
     if [ -z "$connect" ]; then
-        # echo "psql"
         echo $sql | sudo -i -u postgres psql --echo-errors
     else
-        # echo "psql db: $connect"
         echo $sql | sudo -i -u postgres psql --echo-errors --dbname=$connect
     fi
 done <<< "$scripts"
-
-# exit 0
-
-
-# echo "Creating Hystory database user '$user'..."
-# #
-# echo ""
-# echo "Creating Hystory database '$db'..."
-# source "./sql/create_db.sql"
-# echo $sql | sudo -i -u postgres psql --echo-errors
-# #
-# echo ""
-# echo "Creating 'tags' table..."
-# source "./sql/create_tags.sql"
-# echo $sql | sudo -i -u postgres psql --echo-errors
-# #
-# echo ""
-# echo "Creating 'event' table..."
-# source "./sql/create_event.sql"
-# echo $sql | sudo -i -u postgres psql --echo-errors
-# #
-# echo ""
-# echo "Creating 'event_view' view..."
-# source "./sql/create_event_view.sql"
-# echo $sql | sudo -i -u postgres psql --echo-errors

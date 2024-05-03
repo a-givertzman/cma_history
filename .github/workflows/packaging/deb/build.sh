@@ -21,15 +21,6 @@ maintainer="anton lobanov <lobanov.anton@gmail.com>"
 licenseName="GNU GENERAL PUBLIC LICENSE v3.0"
 licenseFile="LICENSE"
 
-############ READING VERSION FROM ARGUMENT ############
-RED='\033[0;31m'
-NC='\033[0m' # No Color
-version=$1
-if [[ "$version" =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then 
-	echo "Version: $version"
-else
-	echo -e "${RED}ERROR${NC}: Version not supplied.\nDebian package build script required proper version of your softvare in the format: x.y.z, passed as argument"
-fi
 ############ LIST OF MANAGED VARIABLES OPTIONAL FOR DEB PACKAGE ############
 #
 # preinst, postinst, prerm and postrm scripts:
@@ -61,6 +52,16 @@ arch=
 # "<package_name> [(<<|>>|<=|>=|= <version>)], ..."
 # e.g. "foo (>=2.34), bar"
 depends="postgres (>=13.14)"
+
+############ READING VERSION FROM ARGUMENT ############
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+version=$1
+if [[ "$version" =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then 
+	echo "Version: $version"
+else
+	echo -e "${RED}ERROR${NC}: Version not supplied.\nDebian package build script required proper version of your softvare in the format: x.y.z, passed as argument"
+fi
 
 # check required variables
 echo "Checking reqired variables ..."

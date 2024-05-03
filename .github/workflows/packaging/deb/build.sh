@@ -51,7 +51,7 @@ arch=
 # comma separated list of the package dependecies in the following format:
 # "<package_name> [(<<|>>|<=|>=|= <version>)], ..."
 # e.g. "foo (>=2.34), bar"
-depends="postgres (>=13.14)"
+depends="" #"postgres (>=13.14)"
 
 ############ READING VERSION FROM ARGUMENT ############
 RED='\033[0;31m'

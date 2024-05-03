@@ -14,4 +14,4 @@
 #         systemctl disable api-server
 #     fi    
 # fi
-echo "PRE RM called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 
+echo -e "PRE RM called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 

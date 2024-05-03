@@ -43,12 +43,15 @@ fi
 assets=(
 	"./src/cma-history-config.yaml /home/scada/api-server/ 644"
 	"./src/cma-server-config.yaml /home/scada/cma-server/ 644"
-	"./sql/create_event_view.sql /tmp/cma-history/ 644"
-	"./sql/create_event.sql /tmp/cma-history/ 644"
-	"./sql/create_tags.sql /tmp/cma-history/ 644"
-	"./sql/drop_event_view.sql /tmp/cma-history/ 644"
-	"./sql/drop_event.sql /tmp/cma-history/ 644"
-	"./sql/drop_tags.sql /tmp/cma-history/ 644"
+	"sql/create_db.sql /etc/cma-history/ 644"
+	"sql/create_event_view.sql /etc/cma-history/ 644"
+	"sql/create_event.sql /etc/cma-history/ 644"
+	"sql/create_grant_user.sql /etc/cma-history/ 644"
+	"sql/create_tags.sql /etc/cma-history/ 644"
+	"sql/create_user.sql /etc/cma-history/ 644"
+	"sql/drop_event_view.sql /etc/cma-history/ 644"
+	"sql/drop_event.sql /etc/cma-history/ 644"
+	"sql/drop_tags.sql /etc/cma-history/ 644"
 )
 outputDir=target/
 # 'any', 'all' or one of the supported architecture (e.g., 'amd64', 'arm64', 'i386', 'armhf')

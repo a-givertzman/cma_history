@@ -52,10 +52,29 @@ arch=
 # "<package_name> [(<<|>>|<=|>=|= <version>)], ..."
 # e.g. "foo (>=2.34), bar"
 depends="" #"postgres (>=13.14)"
-
-############ READING VERSION FROM ARGUMENT ############
+#
+# Database configuration:
+#
+#   basic database parameters
+user="crane_data_server"
+pass="00d0-25e4-*&s2-ccds"
+db="crane_data_server"
+#
+#   list of SQL scripts, builts from bash-script files (where database name, user & pass substituted from variables)
+read -r -d '' sqlScripts << EOF
+	"./sql/create_db.sql.sh" "./sql/create_db.sql"
+	"./sql/create_user.sql.sh" "./sql/create_user.sql"
+	"./sql/create_grant_user.sql.sh" "./sql/create_grant_user.sql"
+EOF
+#
+############# CONSTANTS DEFINITION ############
 RED='\033[0;31m'
+BLUE='\033[0;34m'
+GRAY='\033[1;30m'
+YELLOW='\033[1;93m'
 NC='\033[0m' # No Color
+#
+########### READING VERSION FROM ARGUMENT ############
 version=$1
 if [[ "$version" =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then 
 	echo "Version: $version"
@@ -78,15 +97,7 @@ echo "${!licenseFile@}=${licenseFile:?$missedVarMsg}"
 
 echo "Start packaging ..."
 
-############ PREPARE SQL SCRIPTS ############
-user="crane_data_server"
-pass="00d0-25e4-*&s2-ccds"
-db="crane_data_server"
-read -r -d '' scripts << EOF
-	"./sql/create_db.sql.sh" "./sql/create_db.sql"
-	"./sql/create_user.sql.sh" "./sql/create_user.sql"
-	"./sql/create_grant_user.sql.sh" "./sql/create_grant_user.sql"
-EOF
+############ PREPARING SQL SCRIPTS ############
 regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"'
 while IFS= read -r row; do
     [[ $row =~ $regex ]]
@@ -102,15 +113,20 @@ while IFS= read -r row; do
 	else
 		echo -e "${RED}SQL script not found: '$srcPath' ${NC}"
 	fi
-done <<< "$scripts"
+done <<< "$sqlScripts"
 
 ############ INITIALIZE THE PACKAGE SOURCE STRUCTURE AND COPY RESOURCES ############
 
 arch=${arch:=$(dpkg --print-architecture)}
 debFileName="${name}_${version}_${arch}"
-packageRoot=$(readlink -m "/tmp/debian/${debFileName}")
+ppackageRootCONSTANTS DEFINITIONtmp/debian/${debFileName}")
 
+BLUE='\033[0;34m'
+GRAY='\033[1;30m'
+YELLOW='\033[1;93m'
 if [[ -d $packageRoot ]]; then
+#
+ackageRoot=$(readlink -m "/tmp/debian/${debFileName}")
 	echo "Freeing the directory for temporary build files ..."
 	rm -rf $packageRoot
 fi

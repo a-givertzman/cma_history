@@ -59,7 +59,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         else
             sudo -i -u postgres psql --echo-errors --dbname=$connect -a -f "$path"
         fi
-        read -p "Next ? " -n 1 -r REPLY
     done <<< "$scripts"
 
     echo "Clearing - done"

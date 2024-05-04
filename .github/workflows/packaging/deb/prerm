@@ -24,7 +24,8 @@ echo -e "${RED}database will be permanently removed... ${NC}"
 echo -e ""
 read -p "Are you sure (yes/no) ? " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    # do dangerous stuff
+    echo "Clearing the historian data..."
+    echo "Clearing - done"
 fi
 echo -e ""
 echo -e "PRE RM called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 

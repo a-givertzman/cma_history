@@ -53,28 +53,12 @@ arch=
 # e.g. "foo (>=2.34), bar"
 depends="" #"postgres (>=13.14)"
 #
-# Database configuration:
-#
-#   basic database parameters
-user="crane_data_server"
-pass="00d0-25e4-*&s2-ccds"
-db="crane_data_server"
-#
-#   list of SQL scripts, builts from bash-script files (where database name, user & pass substituted from variables)
-read -r -d '' sqlScripts << EOF
-	"./sql/create_db.sql.sh" "./sql/create_db.sql"
-	"./sql/create_user.sql.sh" "./sql/create_user.sql"
-	"./sql/create_grant_user.sql.sh" "./sql/create_grant_user.sql"
-EOF
-#
-############# CONSTANTS DEFINITION ############
+############ READING VERSION FROM ARGUMENT ############
 RED='\033[0;31m'
 BLUE='\033[0;34m'
 GRAY='\033[1;30m'
 YELLOW='\033[1;93m'
 NC='\033[0m' # No Color
-#
-########### READING VERSION FROM ARGUMENT ############
 version=$1
 if [[ "$version" =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then 
 	echo "Version: $version"
@@ -97,36 +81,13 @@ echo "${!licenseFile@}=${licenseFile:?$missedVarMsg}"
 
 echo "Start packaging ..."
 
-############ PREPARING SQL SCRIPTS ############
-regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"'
-while IFS= read -r row; do
-    [[ $row =~ $regex ]]
-    srcPath=${BASH_REMATCH[1]:="${RED}not specified${NC}"}
-    targetPath=${BASH_REMATCH[2]:="${RED}not specified${NC}"}
-    echo ""
-    echo -e "\t${GRAY}Building SQL script ${NC}'$targetPath'${GRAY} from file${NC} '$srcPath'"
-	if [ -f "$srcPath" ]; then
-		source "$srcPath"
-		echo -e "\t${GRAY}SQL:${NC}"
-		echo -e "\t${GRAY}$sql${NC}"
-		echo -e "$sql" > "$targetPath"
-	else
-		echo -e "${RED}SQL script not found: '$srcPath' ${NC}"
-	fi
-done <<< "$sqlScripts"
-
 ############ INITIALIZE THE PACKAGE SOURCE STRUCTURE AND COPY RESOURCES ############
 
 arch=${arch:=$(dpkg --print-architecture)}
 debFileName="${name}_${version}_${arch}"
-ppackageRootCONSTANTS DEFINITIONtmp/debian/${debFileName}")
+packageRoot=$(readlink -m "/tmp/debian/${debFileName}")
 
-BLUE='\033[0;34m'
-GRAY='\033[1;30m'
-YELLOW='\033[1;93m'
 if [[ -d $packageRoot ]]; then
-#
-ackageRoot=$(readlink -m "/tmp/debian/${debFileName}")
 	echo "Freeing the directory for temporary build files ..."
 	rm -rf $packageRoot
 fi

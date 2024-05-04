@@ -20,23 +20,32 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v2
 
-      - name: Update version number in the Cargo.toml
+      - name: Static analysis | Markdown lint tool
+        uses: docker://avtodev/markdown-lint:v1
+        with:
+          config: '.github/markdownlint/markdownlint.yaml'
+          args: "**/*.md"
+      - name: Static analysis | ShellChecker
         run: |
-          old_version_var=$(cat ./Cargo.toml | sed -rn 's/^version[\t ]*=[\t ]*\"([0-9]+\.[0-9]+\.[0-9]+)\"\s*$/\1/gp')
+          echo -e "\033[0;31mEscaped for now, not installed yet\033[0m"
+
+      - name: Build release (SQL scripts)
+        run: ./src/build_sql.sh
+
+      - name: Update version number in the 'cma-history.toml'
+        run: |
+          old_version_var=$(cat ./cma-history.toml | sed -rn 's/^version[\t ]*=[\t ]*\"([0-9]+\.[0-9]+\.[0-9]+)\"\s*$/\1/gp')
           echo "old version: $old_version_var"
-          old_build_var=$(cat ./Cargo.toml | sed -rn 's/^version[\t ]*=[\t ]*\"[0-9]+\.[0-9]+\.([0-9]+)\"\s*$/\1/gp')
+          old_build_var=$(cat ./cma-history.toml | sed -rn 's/^version[\t ]*=[\t ]*\"[0-9]+\.[0-9]+\.([0-9]+)\"\s*$/\1/gp')
           echo "old build number: $old_build_var"
           new_build_var=$((old_build_var+1))
           echo "new build number: $new_build_var"
           # echo "new build: ${{ github.run_number }}"
-          sed -i -r "s/^(version[\t ]*=[\t ]*\"[0-9]+\.[0-9]+\.)[0-9]+\"\s*$/\1${new_build_var}\"/g" ./Cargo.toml
-          new_version_var=$(cat ./Cargo.toml | sed -rn 's/^version[\t ]*=[\t ]*\"([0-9]+\.[0-9]+\.[0-9]+)\"\s*$/\1/gp')
+          sed -i -r "s/^(version[\t ]*=[\t ]*\"[0-9]+\.[0-9]+\.)[0-9]+\"\s*$/\1${new_build_var}\"/g" ./cma-history.toml
+          new_version_var=$(cat ./cma-history.toml | sed -rn 's/^version[\t ]*=[\t ]*\"([0-9]+\.[0-9]+\.[0-9]+)\"\s*$/\1/gp')
           echo "new version: $new_version_var"
           echo "NEW_VERSION=$new_version_var" >> $GITHUB_ENV
           echo "new version: ${{ env.NEW_VERSION }}"
-
-      - name: Build release
-        run: cargo build --release
 
       - name: Build deb package
         run: ./.github/workflows/packaging/deb/build.sh ${{ env.NEW_VERSION }}
@@ -56,8 +65,8 @@ jobs:
           branch: master
           unprotect_reviews: true
 
-      - name: Zip artifact for deployment
-        run: zip ./target/release/release.zip -r ./target/release/* ./config.yaml ./extensions/*
+      # - name: Zip artifact for deployment
+      #   run: zip ./target/release/release.zip -r ./target/release/* ./config.yaml ./extensions/*
 
       - name: Publish release
         uses: ncipollo/release-action@v1

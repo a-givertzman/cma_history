@@ -25,7 +25,7 @@ licenseFile="LICENSE"
 #
 # preinst, postinst, prerm and postrm scripts:
 # preinst="./.github/workflows/packaging/deb/preinst"
-postinst="./.github/workflows/packaging/deb/postinst"
+# postinst="./.github/workflows/packaging/deb/postinst"
 prerm="./.github/workflows/packaging/deb/prerm"
 postrm="./.github/workflows/packaging/deb/postrm"
 #

@@ -27,7 +27,7 @@ licenseFile="LICENSE"
 # preinst="./.github/workflows/packaging/deb/preinst"
 postinst="./.github/workflows/packaging/deb/postinst"
 prerm="./.github/workflows/packaging/deb/prerm"
-# postrm="./.github/workflows/packaging/deb/postrm"
+postrm="./.github/workflows/packaging/deb/postrm"
 #
 # list of assets in the format:
 # 	<sourcePath> <installPath> <permissions>

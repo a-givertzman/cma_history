@@ -27,6 +27,10 @@ RED='\033[0;31m'
 BLUE='\033[0;34m'
 GRAY='\033[1;30m'
 NC='\033[0m' # No Color
+
+echo -e ""
+echo -e "POST INST called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 
+exit 0
 ############ LOAD TO DB VIA PSQL ############
 regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 while IFS= read -r row; do

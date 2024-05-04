@@ -14,4 +14,17 @@
 #         systemctl disable api-server
 #     fi    
 # fi
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+GRAY='\033[1;30m'
+NC='\033[0m' # No Color
+
+echo -e "${RED}All historian data stored in the ${NC}"
+echo -e "${RED}ndatabase will be permanently removed... ${NC}"
+echo -e ""
+read -p "Are you sure (yes/no) ? " -n 1 -r
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    # do dangerous stuff
+fi
+echo -e ""
 echo -e "PRE RM called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 

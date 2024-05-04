@@ -5,4 +5,4 @@
 # echo ""
 # echo "Reload systemd manager configuration..."
 # systemctl daemon-reload
-echo "POST RM called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 
+echo -e "POST RM called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 

@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
+        with:
+          token: secrets.RELEASES_TOKEN
 
       - name: Static analysis | Markdown lint tool
         uses: docker://avtodev/markdown-lint:v1

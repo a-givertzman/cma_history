@@ -34,7 +34,7 @@ VALUES
 
 CREATE OR REPLACE FUNCTION event_purge_records()
 RETURNS void 
-LANGUAGE plpgsql AS \$\$
+LANGUAGE plpgsql AS $$
 DECLARE
     deleted INT;
     to_delete INT;
@@ -72,12 +72,12 @@ BEGIN
         UPDATE event_utils SET is_purge_running = false WHERE id = 1;
     END IF;
 END;
-\$\$;
+$$;
 
 CREATE OR REPLACE FUNCTION event_check_for_purge()
 RETURNS void 
 LANGUAGE plpgsql
-AS \$\$
+AS $$
 DECLARE
     is_purge_needed BOOLEAN;
 BEGIN
@@ -86,12 +86,12 @@ BEGIN
         PERFORM event_purge_records();
     END IF;
 END;
-\$\$;
+$$;
 
 CREATE OR REPLACE FUNCTION event_counter_inc()
 RETURNS trigger 
 LANGUAGE plpgsql
-AS \$\$
+AS $$
 DECLARE
 add_count INT;
 BEGIN
@@ -100,7 +100,7 @@ BEGIN
     PERFORM event_check_for_purge();
     RETURN new;
 END;
-\$\$;
+$$;
 
 CREATE OR REPLACE TRIGGER event_insert_trigger
 AFTER INSERT ON event
@@ -111,7 +111,7 @@ EXECUTE PROCEDURE  event_counter_inc();
 CREATE OR REPLACE FUNCTION event_counter_dec()
 RETURNS trigger 
 LANGUAGE plpgsql
-AS \$\$
+AS $$
 DECLARE
     del_count INT;
 BEGIN
@@ -119,7 +119,7 @@ BEGIN
     UPDATE event_utils SET row_count = COALESCE(row_count, 0) - del_count WHERE id = 1;
     RETURN new;
 END;
-\$\$;
+$$;
 
 CREATE OR REPLACE TRIGGER event_delete_trigger
 AFTER DELETE ON event

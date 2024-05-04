@@ -55,9 +55,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo -e "\t${GRAY}SQL:${NC}"
         echo -e "\t${GRAY}$sql${NC}"
         if [ -z "$connect" ]; then
-            sudo -i -u postgres psql --echo-errors -a -f "$sqlFile"
+            sudo -i -u postgres psql --echo-errors -a -f "$path"
         else
-            sudo -i -u postgres psql --echo-errors --dbname=$connect -a -f "$sqlFile"
+            sudo -i -u postgres psql --echo-errors --dbname=$connect -a -f "$path"
         fi
     done <<< "$scripts"
 

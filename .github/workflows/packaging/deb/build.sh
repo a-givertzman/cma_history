@@ -78,6 +78,32 @@ echo "${!licenseFile@}=${licenseFile:?$missedVarMsg}"
 
 echo "Start packaging ..."
 
+############ PREPARE SQL SCRIPTS ############
+user="crane_data_server"
+pass="00d0-25e4-*&s2-ccds"
+db="crane_data_server"
+read -r -d '' scripts << EOF
+	"./sql/create_db.sql.sh" "./sql/create_db.sql"
+	"./sql/create_user.sql.sh" "./sql/create_user.sql"
+	"./sql/create_grant_user.sql.sh" "./sql/create_grant_user.sql"
+EOF
+regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"'
+while IFS= read -r row; do
+    [[ $row =~ $regex ]]
+    srcPath=${BASH_REMATCH[1]:="${RED}not specified${NC}"}
+    targetPath=${BASH_REMATCH[2]:="${RED}not specified${NC}"}
+    echo ""
+    echo -e "\t${GRAY}Building SQL script ${NC}'$targetPath'${GRAY} from file${NC} '$srcPath'"
+	if [ -f "$srcPath" ]; then
+		source "$srcPath"
+		echo -e "\t${GRAY}SQL:${NC}"
+		echo -e "\t${GRAY}$sql${NC}"
+		echo -e "$sql" > "$targetPath"
+	else
+		echo -e "${RED}SQL script not found: '$srcPath' ${NC}"
+	fi
+done <<< "$scripts"
+
 ############ INITIALIZE THE PACKAGE SOURCE STRUCTURE AND COPY RESOURCES ############
 
 arch=${arch:=$(dpkg --print-architecture)}

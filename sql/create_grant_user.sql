@@ -1,11 +1,9 @@
-read -r -d '' sql << EOF
-    do \$\$
-    begin
-        if exists (SELECT 1 FROM pg_database WHERE datname = '$db') THEN
-            if exists (SELECT 1 FROM pg_roles WHERE rolname='$user') then
-                GRANT ALL PRIVILEGES ON DATABASE $db TO $user;
-            end if;
+do $$
+begin
+    if exists (SELECT 1 FROM pg_database WHERE datname = 'crane_data_server') THEN
+        if exists (SELECT 1 FROM pg_roles WHERE rolname='crane_data_server') then
+            GRANT ALL PRIVILEGES ON DATABASE crane_data_server TO crane_data_server;
         end if;
-    end
-    \$\$;
-EOF
+    end if;
+end
+$$;

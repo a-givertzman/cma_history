@@ -10,9 +10,9 @@ db="crane_data_server"
 #
 #   list of SQL scripts, builts from bash-script files (where database name, user & pass substituted from variables)
 read -r -d '' sqlScripts << EOF
-	"./sql/create_db.sql.sh" "./sql/create_db.sql"
-	"./sql/create_user.sql.sh" "./sql/create_user.sql"
-	"./sql/create_grant_user.sql.sh" "./sql/create_grant_user.sql"
+	"./src/create_db.sql.sh" "./sql/create_db.sql"
+	"./src/create_user.sql.sh" "./sql/create_user.sql"
+	"./src/create_grant_user.sql.sh" "./sql/create_grant_user.sql"
 EOF
 #
 ############# CONSTANTS DEFINITION ############

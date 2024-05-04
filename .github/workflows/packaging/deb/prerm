@@ -14,13 +14,23 @@
 #         systemctl disable api-server
 #     fi    
 # fi
+#
+############ LIST OF SQL SCRIPTS TO BE EXECUTED ############
+# list of SQL scripts to be executed in the format:
+# 	[database] <path to sql script> <description>
+read -r -d '' scripts << EOF
+    "$db" "/etc/cma-history/drop_event_view.sql" "Drop 'event_view' view..."
+    "$db" "/etc/cma-history/drop_event.sql" "Drop 'event' table..."
+EOF
+
+############ PRE RM ACTIONS ############
 RED='\033[0;31m'
 BLUE='\033[0;34m'
 GRAY='\033[1;30m'
 YELLOW='\033[1;93m'
 NC='\033[0m' # No Color
 echo -e ""
-echo -e "${YELLOW}All historian data stored in the ${NC}"
+echo -e "${YELLOW}All historical data stored in the ${NC}"
 echo -e "${YELLOW}database will be permanently removed... ${NC}"
 echo -e ""
 read -p "Are you sure (yes/no) ? " -n 1 -r REPLY
@@ -28,6 +38,29 @@ echo
 echo "Reply: $REPLY"
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Clearing the historian data..."
+
+    ############ LOAD TO DB VIA PSQL ############
+    regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
+    while IFS= read -r row; do
+        [[ $row =~ $regex ]]
+        connect=${BASH_REMATCH[1]:=""}
+        path=${BASH_REMATCH[2]:="${RED}not specified${NC}"}
+        description=${BASH_REMATCH[4]:="Unnamed SQL script..."}
+        echo ""
+        echo -e "c0: $c0"
+        echo -e "$description"
+        echo -e "\t${GRAY}from file:${NC} $path"
+        echo -e "\t${GRAY}connect to database:${NC} $connect"
+        source "$path"
+        echo -e "\t${GRAY}SQL:${NC}"
+        echo -e "\t${GRAY}$sql${NC}"
+        if [ -z "$connect" ]; then
+            sudo -i -u postgres psql --echo-errors -a -f "$sqlFile"
+        else
+            sudo -i -u postgres psql --echo-errors --dbname=$connect -a -f "$sqlFile"
+        fi
+    done <<< "$scripts"
+
     echo "Clearing - done"
 else
     echo "The historical data stays unchanged in the database"

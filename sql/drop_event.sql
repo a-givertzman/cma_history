@@ -1,7 +1,7 @@
 /*
     PROCESS EVENT
 */
-read -r -d '' sql << EOF
+-- read -r -d '' sql << EOF
     drop trigger if exists event_delete_trigger;
     drop function if exists event_counter_dec();
     drop trigger if exists event_insert_trigger;
@@ -10,4 +10,4 @@ read -r -d '' sql << EOF
     drop function if exists event_purge_records();
     drop table if exists event_utils;
     drop table if exists event;
-EOF
+-- EOF

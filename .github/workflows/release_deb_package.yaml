@@ -73,6 +73,6 @@ jobs:
       - name: Publish release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "./target/release/release.zip,./target/cma-history_${{ env.NEW_VERSION }}_amd64.deb"
+          artifacts: "./target/cma-history_${{ env.NEW_VERSION }}_amd64.deb"
           tag: internal_v${{ env.NEW_VERSION }}
           token: ${{ secrets.RELEASES_TOKEN }}

@@ -1,0 +1,81 @@
+#!/bin/bash
+# 
+# Deb package postinst script for API Server
+#
+############ CONFIGURATION SECTION ############
+#
+# Standart user, pass, database name for History service
+#
+db="cma"
+user="cma"
+pass="00d0"
+#
+############ LIST OF SQL SCRIPTS TO BE EXECUTED ############
+# list of SQL scripts to be executed in the format:
+# 	<database> <user> <path to sql script> [description]
+read -r -d '' scripts << EOF
+    ""      ""  "sql/create_db.sql" "Creating database '$db'..."
+    ""      ""  "sql/create_user.sql" "Creating database user '$user'..."
+    "$db"   ""  "sql/create_grant_user.sql" "Grant user '$user' to access Hystory database '$db'..."
+    "$db"   "$user"     "sql/create_tags.sql" "Creating 'tags' table..."
+    "$db"   "$user"     "sql/create_event.sql" "Creating 'event' table..."
+    "$db"   "$user"     "sql/create_event_view.sql" "Creating 'event_view' view..."
+EOF
+
+touch ~/.pgpass
+chmod 0600 ~/.pgpass
+echo *:*:$db:$user:$pass >> ~/.pgpass
+
+############ INSTALLATION ACTIONS ############
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+GRAY='\033[1;30m'
+NC='\033[0m' # No Color
+# echo -e ""
+# echo -e "POST INST called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 
+############ LOAD TO DB VIA PSQL ############
+source ./src/build_sql.sh
+sudo useradd "$user"
+echo "$pass" | sudo passwd "$user";
+sudo usermod -a -G sudo "$user"
+# regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
+regex='\"([^\"]*?)\"[ \t]+\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
+while IFS= read -r row; do
+    [[ $row =~ $regex ]]
+    connect=${BASH_REMATCH[1]:=""}
+    asUser=${BASH_REMATCH[2]:=""}
+    path=${BASH_REMATCH[3]:="${RED}not specified${NC}"}
+    path="$PWD/$path"
+    description=${BASH_REMATCH[5]:="Unnamed SQL script..."}
+    echo ""
+    echo -e "$description"
+    echo -e "\t${GRAY}from file:${NC} $path"
+    echo -e "\t${GRAY}connect to database:${NC} $connect"
+    echo -e "\t${GRAY}as user:${NC} $asUser"
+    if [ -z "$connect" ]; then
+        if [ -z "$asUser" ]; then
+            sudo -i -u postgres psql --echo-errors -a -f "$path"
+        else
+            echo -e "\t${RED}As User:${NC} $asUser"
+            sudo -i -u "$user" psql --echo-errors -a -f "$path"
+            # psql postgresql://cma:00d0@localhost:5432/cma?sslmode=require --echo-errors --no-password -a -f "$path"
+            # psql --echo-errors -U $asUser -a -f "$path"
+        fi
+    else
+        if [ -z "$asUser" ]; then
+            sudo -i -u postgres psql --echo-errors --dbname=$connect -a -f "$path"
+        else
+            echo -e "\t${RED}As User:${NC} $asUser"
+            sudo -i -u "$user" psql --echo-errors --dbname=$connect -a -f "$path"
+            # psql postgresql://cma:00d0@localhost:5432/cma?sslmode=require --echo-errors --no-password --dbname=$connect -a -f "$path"
+            # psql --echo-errors --dbname=$connect -U $asUser -a -f "$path"
+        fi
+    fi
+done <<< "$scripts"
+#
+# Removing temporary files
+# sudo killall -u "$user"
+sudo deluser "$user" -G sudo
+sudo deluser --remove-home -f "$user"
+sudo deluser --group "$user"
+# rm ~/.pgpass

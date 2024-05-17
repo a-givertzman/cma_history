@@ -102,13 +102,14 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE TRIGGER event_insert_trigger
-AFTER INSERT ON event
-REFERENCING NEW TABLE AS new_tbl
-FOR EACH STATEMENT
-EXECUTE PROCEDURE  event_counter_inc();
+DROP TRIGGER IF EXISTS event_insert_trigger ON event;
+CREATE TRIGGER event_insert_trigger
+    AFTER INSERT ON event
+    REFERENCING NEW TABLE AS new_tbl
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE  event_counter_inc();
 
-CREATE OR REPLACE FUNCTION event_counter_dec()
+CREATE FUNCTION event_counter_dec()
 RETURNS trigger 
 LANGUAGE plpgsql
 AS $$
@@ -121,8 +122,9 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE TRIGGER event_delete_trigger
-AFTER DELETE ON event
-REFERENCING OLD TABLE AS old_tbl 
-FOR EACH STATEMENT
-EXECUTE PROCEDURE  event_counter_dec();
+DROP TRIGGER IF EXISTS event_delete_trigger ON event;
+CREATE TRIGGER event_delete_trigger
+    AFTER DELETE ON event
+    REFERENCING OLD TABLE AS old_tbl 
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE  event_counter_dec();

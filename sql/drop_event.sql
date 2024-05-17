@@ -9,3 +9,6 @@ drop function if exists event_check_for_purge();
 drop function if exists event_purge_records();
 drop table if exists event_utils;
 drop table if exists event;
+
+-- To complitely drop the database and user
+-- DROP OWNED BY cma; drop database cma; drop user cma;

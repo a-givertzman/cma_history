@@ -12,14 +12,14 @@ db="crane_data_server"
 #
 ############ LIST OF SQL SCRIPTS TO BE EXECUTED ############
 # list of SQL scripts to be executed in the format:
-# 	[database] <path to sql script> <description>
+# 	<database> <user> <path to sql script> [description]
 read -r -d '' scripts << EOF
-    "" "/etc/cma-history/create_user.sql" "Creating Hystory database user '$user'..."
-    "" "/etc/cma-history/create_db.sql" "Creating Hystory database '$db'..."
-    "" "/etc/cma-history/create_grant_user.sql" "Creating Hystory database '$db'..."
-    "$db" "/etc/cma-history/create_tags.sql" "Creating 'tags' table..."
-    "$db" "/etc/cma-history/create_event.sql" "Creating 'event' table..."
-    "$db" "/etc/cma-history/create_event_view.sql" 
+    ""      "postgres"  "/etc/cma-history/create_user.sql" "Creating Hystory database user '$user'..."
+    ""      "postgres"  "/etc/cma-history/create_db.sql" "Creating Hystory database '$db'..."
+    ""      "postgres"  "/etc/cma-history/create_grant_user.sql" "Grant user '$user' to access Hystory database '$db'..."
+    "$db"   "$user"     "/etc/cma-history/create_tags.sql" "Creating 'tags' table..."
+    "$db"   "$user"     "/etc/cma-history/create_event.sql" "Creating 'event' table..."
+    "$db"   "$user"     "/etc/cma-history/create_event_view.sql" "Creating 'event_view' view..."
 EOF
 
 ############ INSTALLATION ACTIONS ############
@@ -30,19 +30,22 @@ NC='\033[0m' # No Color
 # echo -e ""
 # echo -e "POST INST called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 
 ############ LOAD TO DB VIA PSQL ############
-regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
+# regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
+regex='\"([^\"]*?)\"[ \t]+\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 while IFS= read -r row; do
     [[ $row =~ $regex ]]
     connect=${BASH_REMATCH[1]:=""}
-    path=${BASH_REMATCH[2]:="${RED}not specified${NC}"}
-    description=${BASH_REMATCH[4]:="Unnamed SQL script..."}
+    asUser=${BASH_REMATCH[2]:="${RED}not specified${NC}"}
+    path=${BASH_REMATCH[3]:="${RED}not specified${NC}"}
+    description=${BASH_REMATCH[5]:="Unnamed SQL script..."}
     echo ""
     echo -e "$description"
     echo -e "\t${GRAY}from file:${NC} $path"
     echo -e "\t${GRAY}connect to database:${NC} $connect"
+    echo -e "\t${GRAY}as user:${NC} $asUser"
     if [ -z "$connect" ]; then
-        echo $sql | sudo -i -u postgres psql --echo-errors -a -f "$path"
+        echo $sql | sudo -i -u $asUser psql --echo-errors -a -f "$path"
     else
-        echo $sql | sudo -i -u postgres psql --echo-errors --dbname=$connect -a -f "$path"
+        echo $sql | sudo -i -u $asUser psql --echo-errors --dbname=$connect -a -f "$path"
     fi
 done <<< "$scripts"

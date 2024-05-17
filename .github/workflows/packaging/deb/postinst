@@ -38,14 +38,12 @@ regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 while IFS= read -r row; do
     [[ $row =~ $regex ]]
     connect=${BASH_REMATCH[1]:=""}
-    asUser=${BASH_REMATCH[2]:="${RED}not specified${NC}"}
-    path=${BASH_REMATCH[3]:="${RED}not specified${NC}"}
-    description=${BASH_REMATCH[5]:="Unnamed SQL script..."}
+    path=${BASH_REMATCH[2]:="${RED}not specified${NC}"}
+    description=${BASH_REMATCH[4]:="Unnamed SQL script..."}
     echo ""
     echo -e "$description"
     echo -e "\t${GRAY}from file:${NC} $path"
     echo -e "\t${GRAY}connect to database:${NC} $connect"
-    echo -e "\t${GRAY}as user:${NC} $asUser"
     if [ -z "$connect" ]; then
         sudo -i -u "$asUser" psql --echo-errors -a -f "$path"
     else

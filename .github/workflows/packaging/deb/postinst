@@ -14,12 +14,12 @@ db="crane_data_server"
 # list of SQL scripts to be executed in the format:
 # 	<database> <user> <path to sql script> [description]
 read -r -d '' scripts << EOF
-    ""      "postgres"  "/etc/cma-history/create_user.sql" "Creating database user '$user'..."
-    ""      "postgres"  "/etc/cma-history/create_db.sql" "Creating database '$db'..."
-    ""      "postgres"  "/etc/cma-history/create_grant_user.sql" "Grant user '$user' to access database '$db'..."
-    "$db"   "$user"     "/etc/cma-history/create_tags.sql" "Creating 'tags' table..."
-    "$db"   "$user"     "/etc/cma-history/create_event.sql" "Creating 'event' table..."
-    "$db"   "$user"     "/etc/cma-history/create_event_view.sql" "Creating 'event_view' view..."
+    ""      "/etc/cma-history/create_user.sql" "Creating database user '$user'..."
+    ""      "/etc/cma-history/create_db.sql" "Creating database '$db'..."
+    ""      "/etc/cma-history/create_grant_user.sql" "Grant user '$user' to access database '$db'..."
+    "$db"   "/etc/cma-history/create_tags.sql" "Creating 'tags' table..."
+    "$db"   "/etc/cma-history/create_event.sql" "Creating 'event' table..."
+    "$db"   "/etc/cma-history/create_event_view.sql" "Creating 'event_view' view..."
 EOF
 
 ############ INSTALLATION ACTIONS ############
@@ -33,7 +33,8 @@ NC='\033[0m' # No Color
 sudo useradd "$user"
 echo "$pass" | sudo passwd "$user";
 sudo usermod -a -G sudo "$user"
-regex='\"([^\"]*?)\"[ \t]+\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
+regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
+# regex='\"([^\"]*?)\"[ \t]+\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 while IFS= read -r row; do
     [[ $row =~ $regex ]]
     connect=${BASH_REMATCH[1]:=""}
@@ -46,9 +47,9 @@ while IFS= read -r row; do
     echo -e "\t${GRAY}connect to database:${NC} $connect"
     echo -e "\t${GRAY}as user:${NC} $asUser"
     if [ -z "$connect" ]; then
-        sudo -i -u "$user" psql --echo-errors -a -f "$path"
+        sudo -i -u "$asUser" psql --echo-errors -a -f "$path"
     else
-        sudo -i -u "$user" psql --echo-errors --dbname=$connect -a -f "$path"
+        sudo -i -u "$asUser" psql --echo-errors --dbname=$connect -a -f "$path"
     fi
 done <<< "$scripts"
 #

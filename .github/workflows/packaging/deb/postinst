@@ -30,9 +30,8 @@ NC='\033[0m' # No Color
 # echo -e ""
 # echo -e "POST INST called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 
 ############ LOAD TO DB VIA PSQL ############
-sudo useradd "$user"
-echo "$pass" | sudo passwd "$user";
-sudo usermod -a -G sudo "$user"
+sudo adduser --system --no-create-home "$user" --ingroup sudo
+sudo chpasswd <<<"$user:$pass"
 regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 # regex='\"([^\"]*?)\"[ \t]+\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 while IFS= read -r row; do
@@ -45,15 +44,14 @@ while IFS= read -r row; do
     echo -e "\t${GRAY}from file:${NC} $path"
     echo -e "\t${GRAY}connect to database:${NC} $connect"
     if [ -z "$connect" ]; then
-        sudo -i -u "$asUser" psql --echo-errors -a -f "$path"
+        sudo -i -u "$user" psql --echo-errors -a -f "$path"
     else
-        sudo -i -u "$asUser" psql --echo-errors --dbname=$connect -a -f "$path"
+        sudo -i -u "$user" psql --echo-errors --dbname=$connect -a -f "$path"
     fi
 done <<< "$scripts"
 #
 # Removing temporary user and files 
 # sudo killall -u "$user"
-sudo deluser "$user" -G sudo
-sudo deluser --remove-home -f "$user"
-sudo deluser --group "$user"
+sudo deluser "$user" sudo
+sudo deluser --remove-home "$user"
 # rm ~/.pgpass

@@ -1,9 +1,4 @@
-do $$
-begin
-    if exists (SELECT 1 FROM pg_database WHERE datname = 'crane_data_server') THEN
-        if exists (SELECT 1 FROM pg_roles WHERE rolname='crane_data_server') then
-            GRANT ALL PRIVILEGES ON DATABASE crane_data_server TO crane_data_server;
-        end if;
-    end if;
-end
-$$;
+GRANT CONNECT ON DATABASE crane_data_server TO crane_data_server;
+\c crane_data_server
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO crane_data_server;
+GRANT SELECT, USAGE ON ALL SEQUENCES IN SCHEMA public TO crane_data_server;

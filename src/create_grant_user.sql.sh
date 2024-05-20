@@ -1,11 +1,6 @@
 read -r -d '' sql << EOF
-do \$\$
-begin
-    if exists (SELECT 1 FROM pg_database WHERE datname = '$db') THEN
-        if exists (SELECT 1 FROM pg_roles WHERE rolname='$user') then
-            GRANT ALL PRIVILEGES ON DATABASE $db TO $user;
-        end if;
-    end if;
-end
-\$\$;
+GRANT CONNECT ON DATABASE $db TO $user;
+\c $db
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $user;
+GRANT SELECT, USAGE ON ALL SEQUENCES IN SCHEMA public TO $user;
 EOF

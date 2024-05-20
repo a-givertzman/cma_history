@@ -10,5 +10,5 @@ create or replace view event_view as
         t.description AS description
     from
         (event e
-    left join tags t on
+    join tags t on
         (e.pid = t.id));

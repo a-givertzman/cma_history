@@ -16,10 +16,10 @@ db="crane_data_server"
 read -r -d '' scripts << EOF
     "" "/etc/cma-history/create_user.sql" "Creating Hystory database user '$user'..."
     "" "/etc/cma-history/create_db.sql" "Creating Hystory database '$db'..."
-    "" "/etc/cma-history/create_grant_user.sql" "Creating Hystory database '$db'..."
     "$db" "/etc/cma-history/create_tags.sql" "Creating 'tags' table..."
     "$db" "/etc/cma-history/create_event.sql" "Creating 'event' table..."
-    "$db" "/etc/cma-history/create_event_view.sql" 
+    "$db" "/etc/cma-history/create_event_view.sql"
+    "" "/etc/cma-history/create_grant_user.sql" "Creating Hystory database '$db'..."
 EOF
 
 ############ INSTALLATION ACTIONS ############
@@ -41,8 +41,8 @@ while IFS= read -r row; do
     echo -e "\t${GRAY}from file:${NC} $path"
     echo -e "\t${GRAY}connect to database:${NC} $connect"
     if [ -z "$connect" ]; then
-        echo $sql | sudo -i -u postgres psql --echo-errors -a -f "$path"
+        echo $sql | sudo -i -u postgres psql -b -a -c "\\i $path"
     else
-        echo $sql | sudo -i -u postgres psql --echo-errors --dbname=$connect -a -f "$path"
+        echo $sql | sudo -i -u postgres psql -b --dbname=$connect -a -c "\\i $path"
     fi
 done <<< "$scripts"

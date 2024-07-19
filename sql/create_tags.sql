@@ -4,7 +4,20 @@
 do $$
 begin
     if not exists (SELECT 1 FROM pg_type WHERE typname = 'tag_type_enum') THEN
-        create type public.tag_type_enum as enum('Bool','Int','UInt','DInt','Word','LInt','Real','Time','Date_And_Time');
+        CREATE TYPE public."tag_type_enum" AS ENUM (
+            'Bool',
+            'Int',
+            'UInt',
+            'DInt',
+            'Word',
+            'LInt',
+            'Real',
+            'Double',
+            'String',
+            'Json',
+            'Time',
+            'Date_And_Time'
+        );
     end if;
 end
 $$;

@@ -13,3 +13,15 @@ Following software pacages has to be preinstalled by user
 - [CMA Server](https://github.com/a-givertzman/fr-service)
 - [API Server](https://github.com/a-givertzman/api-server)
 - [Postgres for debian](https://www.postgresql.org/download/linux/debian/)
+
+## Configuration
+
+the configuration for the database connection stored in the `./src/conf`
+
+this file must contains following lines:
+
+```bash
+db="cma"
+user="cma"
+pass="00d0"
+```

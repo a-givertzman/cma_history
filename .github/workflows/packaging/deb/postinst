@@ -12,14 +12,14 @@ db="crane_data_server"
 #
 ############ LIST OF SQL SCRIPTS TO BE EXECUTED ############
 # list of SQL scripts to be executed in the format:
-# 	<database> <user> <path to sql script> [description]
+# 	[database] <path to sql script> <description>
 read -r -d '' scripts << EOF
-    ""      "/etc/cma-history/create_user.sql" "Creating database user '$user'..."
-    ""      "/etc/cma-history/create_db.sql" "Creating database '$db'..."
-    ""      "/etc/cma-history/create_grant_user.sql" "Grant user '$user' to access database '$db'..."
-    "$db"   "/etc/cma-history/create_tags.sql" "Creating 'tags' table..."
-    "$db"   "/etc/cma-history/create_event.sql" "Creating 'event' table..."
-    "$db"   "/etc/cma-history/create_event_view.sql" "Creating 'event_view' view..."
+    "" "/etc/cma-history/create_user.sql" "Creating Hystory database user '$user'..."
+    "" "/etc/cma-history/create_db.sql" "Creating Hystory database '$db'..."
+    "$db" "/etc/cma-history/create_tags.sql" "Creating 'tags' table..."
+    "$db" "/etc/cma-history/create_event.sql" "Creating 'event' table..."
+    "$db" "/etc/cma-history/create_event_view.sql"
+    "" "/etc/cma-history/create_grant_user.sql" "Creating Hystory database '$db'..."
 EOF
 
 ############ INSTALLATION ACTIONS ############
@@ -30,10 +30,7 @@ NC='\033[0m' # No Color
 # echo -e ""
 # echo -e "POST INST called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 
 ############ LOAD TO DB VIA PSQL ############
-sudo adduser --system --no-create-home "$user" --ingroup sudo
-sudo chpasswd <<<"$user:$pass"
 regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
-# regex='\"([^\"]*?)\"[ \t]+\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 while IFS= read -r row; do
     [[ $row =~ $regex ]]
     connect=${BASH_REMATCH[1]:=""}
@@ -44,14 +41,8 @@ while IFS= read -r row; do
     echo -e "\t${GRAY}from file:${NC} $path"
     echo -e "\t${GRAY}connect to database:${NC} $connect"
     if [ -z "$connect" ]; then
-        sudo -i -u "$user" psql --echo-errors -a -f "$path"
+        echo $sql | sudo -i -u postgres psql -b -a -c "\\i $path"
     else
-        sudo -i -u "$user" psql --echo-errors --dbname=$connect -a -f "$path"
+        echo $sql | sudo -i -u postgres psql -b --dbname=$connect -a -c "\\i $path"
     fi
 done <<< "$scripts"
-#
-# Removing temporary user and files 
-# sudo killall -u "$user"
-sudo deluser "$user" sudo
-sudo deluser --remove-home "$user"
-# rm ~/.pgpass

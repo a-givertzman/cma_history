@@ -102,7 +102,6 @@ BEGIN
 END;
 $$;
 
-DROP TRIGGER IF EXISTS event_insert_trigger ON event;
 CREATE TRIGGER event_insert_trigger
     AFTER INSERT ON event
     REFERENCING NEW TABLE AS new_tbl
@@ -122,7 +121,6 @@ BEGIN
 END;
 $$;
 
-DROP TRIGGER IF EXISTS event_delete_trigger ON event;
 CREATE TRIGGER event_delete_trigger
     AFTER DELETE ON event
     REFERENCING OLD TABLE AS old_tbl 

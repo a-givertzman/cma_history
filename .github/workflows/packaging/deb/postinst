@@ -5,7 +5,7 @@
 source /etc/cma-history/conf
 ############ LIST OF SQL SCRIPTS TO BE EXECUTED ############
 # list of SQL scripts to be executed in the format:
-# 	<database> <user> <path to sql script> [description]
+# 	<database> <path to sql script> [description]
 read -r -d '' scripts << EOF
     ""      "/etc/cma-history/create_user.sql" "Creating database user '$user'..."
     ""      "/etc/cma-history/create_db.sql" "Creating database '$db'..."

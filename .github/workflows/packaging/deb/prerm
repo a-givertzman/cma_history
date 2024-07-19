@@ -17,7 +17,7 @@
 #
 ############ LIST OF SQL SCRIPTS TO BE EXECUTED ############
 # list of SQL scripts to be executed in the format:
-# 	[database] <path to sql script> <description>
+# 	<database> <path to sql script> <description>
 read -r -d '' scripts << EOF
     "$db" "/etc/cma-history/drop_event_view.sql" "Drop 'event_view' view..."
     "$db" "/etc/cma-history/drop_event.sql" "Drop 'event' table..."

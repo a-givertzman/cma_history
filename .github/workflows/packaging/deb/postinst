@@ -2,14 +2,7 @@
 # 
 # Deb package postinst script for API Server
 #
-############ CONFIGURATION SECTION ############
-#
-# Standart user, pass, database name for History service
-#
-user="crane_data_server"
-pass="00d0-25e4-*&s2-ccds"
-db="crane_data_server"
-#
+source /etc/cma-history/conf
 ############ LIST OF SQL SCRIPTS TO BE EXECUTED ############
 # list of SQL scripts to be executed in the format:
 # 	<database> <user> <path to sql script> [description]
@@ -30,7 +23,9 @@ NC='\033[0m' # No Color
 # echo -e ""
 # echo -e "POST INST called with: \ntarg1: $1\ntarg2: $2\ntarg3: $3\ntarg4: $4" 
 ############ LOAD TO DB VIA PSQL ############
-sudo adduser --system --no-create-home "$user" --ingroup sudo
+echo -e "\t${GRAY} creating temporary user${NC} '$user'..."
+sudo adduser --gecos "" --disabled-password "$user" --ingroup sudo
+echo -e "\t${GRAY} setting pass for temporary user${NC}..."
 sudo chpasswd <<<"$user:$pass"
 regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 # regex='\"([^\"]*?)\"[ \t]+\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
@@ -42,16 +37,15 @@ while IFS= read -r row; do
     echo ""
     echo -e "$description"
     echo -e "\t${GRAY}from file:${NC} $path"
-    echo -e "\t${GRAY}connect to database:${NC} $connect"
     if [ -z "$connect" ]; then
         sudo -i -u "$user" psql --echo-errors -a -f "$path"
     else
+        echo -e "\t${GRAY}connect to database:${NC} $connect"
         sudo -i -u "$user" psql --echo-errors --dbname=$connect -a -f "$path"
     fi
 done <<< "$scripts"
 #
 # Removing temporary user and files 
-# sudo killall -u "$user"
 sudo deluser "$user" sudo
 sudo deluser --remove-home "$user"
 # rm ~/.pgpass

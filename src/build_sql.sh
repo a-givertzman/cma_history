@@ -2,11 +2,7 @@
 #
 #
 # Database configuration:
-#
-#   basic database parameters
-# user="crane_data_server"
-# pass="00d0-25e4-*&s2-ccds"
-# db="crane_data_server"
+source ./src/conf
 #
 #   list of SQL scripts, builts from bash-script files (where database name, user & pass substituted from variables)
 read -r -d '' sqlScripts << EOF

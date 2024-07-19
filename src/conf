@@ -1,0 +1,12 @@
+############ CONFIGURATION SECTION ############
+#
+# Standart user, pass, database name for History service
+#
+# user="crane_data_server"
+# pass="00d0-25e4-*&s2-ccds"
+# db="crane_data_server"
+#
+db="cma"
+user="cma"
+pass="00d0"
+#

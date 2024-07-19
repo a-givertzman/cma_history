@@ -43,6 +43,7 @@ assets=(
 	"./sql/drop_event_view.sql /etc/cma-history/ 644"
 	"./sql/drop_event.sql /etc/cma-history/ 644"
 	"./sql/drop_tags.sql /etc/cma-history/ 644"
+	"./src/conf /etc/cma-history/ 644"
 )
 outputDir=target/
 # 'any', 'all' or one of the supported architecture (e.g., 'amd64', 'arm64', 'i386', 'armhf')

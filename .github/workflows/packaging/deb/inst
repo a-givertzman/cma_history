@@ -1,15 +1,8 @@
 #!/bin/bash
 # 
-# Deb package postinst script for API Server
+# For testing | Installation script
 #
-############ CONFIGURATION SECTION ############
-#
-# Standart user, pass, database name for History service
-#
-db="cma"
-user="cma"
-pass="00d0"
-#
+source ./src/conf
 ############ LIST OF SQL SCRIPTS TO BE EXECUTED ############
 # list of SQL scripts to be executed in the format:
 # 	<database> <user> <path to sql script> [description]

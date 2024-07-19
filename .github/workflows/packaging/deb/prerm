@@ -40,6 +40,11 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Clearing the historian data..."
 
     ############ LOAD TO DB VIA PSQL ############
+    source /etc/cma-history/conf
+    echo -e "\t${GRAY} creating temporary user${NC} '$user'..."
+    sudo adduser --gecos "" --disabled-password "$user" --ingroup sudo
+    echo -e "\t${GRAY} setting pass for temporary user${NC}..."
+    sudo chpasswd <<<"$user:$pass"
     regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
     while IFS= read -r row; do
         [[ $row =~ $regex ]]
@@ -49,14 +54,19 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo ""
         echo -e "$description"
         echo -e "\t${GRAY}from file:${NC} $path"
-        echo -e "\t${GRAY}connect to database:${NC} $connect"
+    
         if [ -z "$connect" ]; then
-            sudo -i -u postgres psql --echo-errors -a -f "$path"
+            sudo -i -u "$user" psql --echo-errors -a -f "$path"
         else
-            sudo -i -u postgres psql --echo-errors --dbname=$connect -a -f "$path"
+            echo -e "\t${GRAY}connect to database:${NC} $connect"
+            sudo -i -u "$user" psql --echo-errors --dbname=$connect -a -f "$path"
         fi
     done <<< "$scripts"
-
+    #
+    # Removing temporary user and files 
+    sudo deluser "$user" sudo
+    sudo deluser --remove-home "$user"
+    # rm ~/.pgpass
     echo "Clearing - done"
 else
     echo "The historical data stays unchanged in the database"

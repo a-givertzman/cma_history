@@ -6,7 +6,12 @@
 # pass="00d0-25e4-*&s2-ccds"
 # db="crane_data_server"
 #
-db="cma"
-user="cma"
-pass="00d0"
-#
+if [ ! -n "$db" ]; then
+    db="cma"
+fi
+if [ ! -n "$user" ]; then
+    user="cma"
+fi
+if [ ! -n "$pass" ]; then
+    pass="00d0"
+fi

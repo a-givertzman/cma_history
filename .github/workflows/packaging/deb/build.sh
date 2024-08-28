@@ -60,16 +60,23 @@ BLUE='\033[0;34m'
 GRAY='\033[1;30m'
 YELLOW='\033[1;93m'
 NC='\033[0m' # No Color
+#
+# check required variables
+echo "Checking reqired variables ..."
 version=$1
 if [[ "$version" =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then 
 	echo "Version: $version"
 else
 	echo -e "${RED}ERROR${NC}: Version not supplied.\nDebian package build script required proper version of your softvare in the format: x.y.z, passed as argument"
 fi
+db=$2
+user=$3
+pass=$4
 
-# check required variables
-echo "Checking reqired variables ..."
 missedVarMsg="non-empty value required"
+echo "${!db@}=${db:? 'Databese name -' $missedVarMsg}"
+echo "${!user@}=${user:? 'Databese user -' $missedVarMsg}"
+echo "${!pass@}=${pass:? 'Databese pass -' $missedVarMsg}"
 echo "${!name@}=${name:?$missedVarMsg}"
 echo "${!version@}=${version:?$missedVarMsg}"
 echo "${!descriptionShort@}=${descriptionShort:?$missedVarMsg}"

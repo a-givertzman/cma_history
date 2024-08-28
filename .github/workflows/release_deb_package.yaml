@@ -2,6 +2,19 @@ name: Create release with beb pacage
 
 on:
   workflow_dispatch:
+    inputs:
+      db_name:
+        description: 'Database name'
+        required: true
+        default: cma
+      db_user:
+        description: 'Database user'
+        required: true
+        default: cma
+      db_pass:
+        description: 'Database pass'
+        required: true
+        default: 00d0
   # pull_request:
 
 env:
@@ -30,7 +43,11 @@ jobs:
           echo -e "\033[0;31mEscaped for now, not installed yet\033[0m"
 
       - name: Build release (SQL scripts)
-        run: ./src/build_sql.sh
+        run: |
+          db=${{ github.event.inputs.db_name }}
+          user=${{ github.event.inputs.db_user }}
+          pass=${{ github.event.inputs.db_pass }}
+          ./src/build_sql.sh
 
       - name: Update version number in the 'cma-history.toml'
         run: |

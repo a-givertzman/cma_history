@@ -16,7 +16,17 @@ Following software pacages has to be preinstalled by user
 
 ## Configuration
 
+- if executing from github actions
+
+- if executing localy
 the configuration for the database connection stored in the `./src/conf`
+
+build deb paclage using the command :
+```bash
+.github/workflows/packaging/deb/build.sh x.y.z dbname dbuser dbpass
+ for example building version number 0.1.1
+.github/workflows/packaging/deb/build.sh 0.1.1
+```
 
 this file must contains following lines:
 
